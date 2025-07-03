@@ -1,12 +1,15 @@
 # ChatGPT Clone - Project State
 
+## Project Version: 0.1.0
+
 ## Current Progress
-- **Step**: 1/30 ✅
+- **Step**: 2/30 ✅
 - **Branch**: main
-- **Last Commit**: Initial project setup
+- **Last Commit**: VSCode workspace configuration
 
 ## Completed Steps
 - [x] Step 1: Initialize monorepo with documentation
+- [x] Step 2: Setup VSCode workspace configuration
 
 ## Architecture Decisions
 - Monorepo structure
@@ -15,6 +18,8 @@
 - Database: PostgreSQL
 - Real-time: WebSockets (Django Channels + Redis)
 - Testing: pytest + Jest
+- Code formatting: Black (Python) + Prettier (JS/TS)
+- Linting: Ruff (Python) + ESLint (JS/TS)
 
 ## Next Step
-Step 2: Setup VSCode workspace configuration
+Step 3: Setup Docker development environment
