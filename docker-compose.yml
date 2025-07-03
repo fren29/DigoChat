@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: digo-chat-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-digo_chat_db}
+      POSTGRES_USER: ${POSTGRES_USER:-digo_chat_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-digo_chat_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-digo_chat_user}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Caching and WebSockets
+  redis:
+    image: redis:7-alpine
+    container_name: digo-chat-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Django Backend
+  backend:
+    build:
+      context: ./digo-chat/backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: digo-chat-backend
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+      - backend_static:/app/staticfiles
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-digo_chat_user}:${POSTGRES_PASSWORD:-digo_chat_pass}@postgres:5432/${POSTGRES_DB:-digo_chat_db}
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-your-secret-key-here}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-True}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-your-openai-key-here}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./digo-chat/frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: digo-chat-frontend
+    restart: unless-stopped
+    command: npm start
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:8000}
+      - REACT_APP_WS_URL=${REACT_APP_WS_URL:-ws://localhost:8000}
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    name: digo-chat-postgres-data
+  redis_data:
+    name: digo-chat-redis-data
+  backend_static:
+    name: digo-chat-backend-static
+
+networks:
+  default:
+    name: digo-chat-network

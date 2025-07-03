@@ -1,17 +1,19 @@
-# ChatGPT Clone - Project State
+# Digo Chat - Project State
 
 ## Project Version: 0.1.0
 
 ## Current Progress
-- **Step**: 2/30 ✅
+- **Step**: 3/30 ✅
 - **Branch**: main
-- **Last Commit**: VSCode workspace configuration
+- **Last Commit**: Docker development environment
 
 ## Completed Steps
 - [x] Step 1: Initialize monorepo with documentation
 - [x] Step 2: Setup VSCode workspace configuration
+- [x] Step 3: Setup Docker development environment
 
 ## Architecture Decisions
+- Project name: Digo Chat (digo-chat)
 - Monorepo structure
 - Backend: Django with clean architecture
 - Frontend: React with TypeScript
@@ -20,6 +22,7 @@
 - Testing: pytest + Jest
 - Code formatting: Black (Python) + Prettier (JS/TS)
 - Linting: Ruff (Python) + ESLint (JS/TS)
+- Containerization: Docker + Docker Compose
 
 ## Next Step
-Step 3: Setup Docker development environment
+Step 4: Initialize Django with clean architecture
