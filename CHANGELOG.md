@@ -15,3 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive .gitignore for Python/Node/IDEs
 - Basic folder structure (backend/, frontend/, docs/)
 - Project state tracking file
+
+## [0.2.0]
+### Added
+- VSCode workspace configuration with recommended extensions
+- Editor settings for Python and JavaScript/TypeScript development
+- EditorConfig for consistent code style across different editors
+- Configured auto-formatting and linting settings
